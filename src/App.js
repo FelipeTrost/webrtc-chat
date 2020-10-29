@@ -38,7 +38,11 @@ function App() {
         }).catch(e => console.log(e));
       };
 
-    peerInstance.ontrack = e => partnerVideoRef.current.srcObject = e.streams[0];
+    peerInstance.ontrack = e => {
+      console.log("got track", e.streams);
+      e.streams[0].oninactive = alert("inactive")
+      partnerVideoRef.current.srcObject = e.streams[0]
+    };
 
     peerInstance.onicecandidate = e => {
       if (e.candidate) {
@@ -46,6 +50,10 @@ function App() {
           setIceCandidatesList(l => [...l, e.candidate])
       }
     }
+
+    peerInstance.createDataChannel("hola", {
+
+    });
 
      peer.current = peerInstance;
   }
@@ -97,8 +105,8 @@ function App() {
 
   return (
     <div className="App">
-        <video ref={videoRef} height="400px" width="400px" autoPlay="true" />
-        <video ref={partnerVideoRef} height="400px" width="400px" autoPlay="true" />
+        <video ref={videoRef} height="400px" width="400px" autoPlay muted />
+        <video ref={partnerVideoRef} height="400px" width="400px" autoPlay />
         <br />
 
         {makingOffer === undefined && (<>
